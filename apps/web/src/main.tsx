@@ -1,15 +1,17 @@
-import { createRoot } from 'react-dom/client'
-import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createRoot } from 'react-dom/client'
+import AuthPage from './routes/auth'
+import VaultPage from './routes/vault'
+import './index.css'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: null,
+    Component: AuthPage,
   },
   {
     path: "/vault",
-    Component: null,
+    Component: VaultPage,
   }
 ])
 
