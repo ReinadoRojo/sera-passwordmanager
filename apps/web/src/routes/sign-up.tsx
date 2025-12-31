@@ -1,12 +1,12 @@
 import { useEffect } from "react"
 import { isAuthenticated } from "../lib/supabase"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { LoginForm } from "@/components/login.form"
+import { RegisterForm } from "@/components/register.form"
 
 const VAULT_URL = `/vault`
-const SIGN_UP_URL = "/signup"
+const SIGN_IN_URL = "/"
 
-function AuthPage() {
+function SignupPage() {
     useEffect(() => {
         if(!window) return
         // Check if authenticated
@@ -28,12 +28,12 @@ function AuthPage() {
                     <p className="mx-auto text-sm text-[#283841]">Open-source password manager</p>
                 </CardHeader>
                 <CardContent>
-                    <LoginForm />
+                    <RegisterForm />
                 </CardContent>
                 <CardFooter>
                     <div className="flex flex-col space-y-4">
                         <p className="text-center text-sm text-[#283841]">
-                            Don't have an account? <a href={SIGN_UP_URL} className="text-blue-500 underline">Sign up</a>
+                            You have already an account? <a href={SIGN_IN_URL} className="text-blue-500 underline">Sign in</a>
                         </p>
                     </div>
                 </CardFooter>
@@ -42,4 +42,4 @@ function AuthPage() {
     )
 }
 
-export default AuthPage
+export default SignupPage
