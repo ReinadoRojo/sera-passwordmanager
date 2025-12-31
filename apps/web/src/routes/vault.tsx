@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isAuthenticated } from "../lib/supabase"
 
 function VaultPage() {
     const [allowed, setAllowed] = useState<boolean | null>(null);
 
-    isAuthenticated().then(([authenticated,]) => {
-        setAllowed(!!authenticated);
-    }).catch(() => false)
+    useEffect(() => {
+        let cancelled = false;
+
+        isAuthenticated().then(([authenticated, user]) => {
+            if(cancelled) return;
+            setAllowed(!!authenticated && !!user)
+        }).catch(() => {
+            if(cancelled) return;
+            setAllowed(false);
+        });
+
+        return () => {
+            cancelled = true;
+        }
+    }, []);
 
     if(allowed === null) {
         return (
