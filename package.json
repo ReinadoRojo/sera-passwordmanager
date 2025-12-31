@@ -1,0 +1,22 @@
+{
+  "name": "sera-passwordmanager",
+  "description": "Open-source, simple and modern password manager.",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "",
+    "dev:extension": "",
+    "dev:web": "",
+    "build": "",
+    "build:extension": "",
+    "build:web": ""
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "workspaces": ["apps/*", "pkgs/*"]
+}
