@@ -4,6 +4,7 @@ import AuthPage from './routes/auth'
 import VaultPage from './routes/vault'
 import './index.css'
 import SignupPage from './routes/sign-up'
+import { Toaster } from 'sonner'
 
 const router = createBrowserRouter([
   {
@@ -21,5 +22,8 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')!).render(
-  <RouterProvider router={router}/>,
+  <>
+    <Toaster position='top-center' />
+    <RouterProvider router={router}/>
+  </>,
 )

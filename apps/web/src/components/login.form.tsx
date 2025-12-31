@@ -6,6 +6,7 @@ import { sb } from "@/lib/supabase"
 import {z} from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
+import { errorMessageHandle } from "@/lib/utils"
 
 export const LoginForm = () => {
     const schema = z.object({
@@ -29,6 +30,7 @@ export const LoginForm = () => {
         })
 
         if(error) {
+            const err_msg = errorMessageHandle(error.code)
             form.resetField("password")
             form.setError("email", {
                 message: "",
@@ -38,30 +40,12 @@ export const LoginForm = () => {
                 message: "",
                 type: "validate",
             })
-            let error_message = "Unknown error!";
-
-            switch(error.code) {
-                case "invalid_credentials":
-                    error_message = "Credentials are invalid!";
-                    break;
-                case "email_not_confirmed":
-                    error_message = "Email has not been verified! Please check for emails in your inbox."
-                    break;
-                case "request_timeout":
-                    error_message = "Our authentication server is having throubles. We're working on solving it!"
-                    break;
-                case "user_banned":
-                    error_message = "This user is banned from our service. Contact support if you belive this is an error."
-                    break;
-                default:
-                    error_message = "Auth provider cannot process the request, reason can vary, contact support."
-                    break;
-            }
-
             form.setError("root", {
-                message: error_message,
+                message: err_msg,
                 type: "validate",
             })
+
+            return;
         }
     }
 

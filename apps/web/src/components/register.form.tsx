@@ -6,6 +6,9 @@ import { sb } from "@/lib/supabase"
 import {z} from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
+import { errorMessageHandle } from "@/lib/utils"
+import { Checkbox } from "./ui/checkbox"
+import { toast } from "sonner"
 
 export const RegisterForm = () => {
     const schema = z.object({
@@ -14,9 +17,10 @@ export const RegisterForm = () => {
         .refine((password) => /[A-Z]/.test(password), { error: "Please use at least one uppercase character" })
         .refine((password) => /[a-z]/.test(password), { error: "Please use at least one lowercase character" })
         .refine((password) => /[0-9]/.test(password), { error: "Please use at least one number" })
-        .refine((password) => /[!@#$%^&*]/.test(password), { error: "Please use at least one special character" }),
-        confirmPassword: z.string()
-    }).refine(values => values.password === values.confirmPassword, { error: "Both passwords must be the same", path: ["confirmPassword"] })
+        .refine((password) => /[!@#$%^&.*]/.test(password), { error: "Please use at least one special character" }),
+        confirmPassword: z.string(),
+        accept: z.boolean({ error: "You must accept the dangers, and also the legal notifications!"})
+    }).refine((data) => data.password === data.confirmPassword, { error: "Passwords don't match", path: ["confirmPassword"] });
     
     const form = useForm({
         resolver: zodResolver(schema),
@@ -24,22 +28,35 @@ export const RegisterForm = () => {
             email: "",
             password: "",
             confirmPassword: "",
+            accept: false
         }
     })
 
     async function onSubmit(formData: z.infer<typeof schema>) {
-        const { email, password, confirmPassword } = formData;
+        const { email, password, confirmPassword, accept } = formData;
 
-        if(password !== confirmPassword) {
-            error("Both passwords myst")
+        if(!accept) {
+            return
         }
 
-        const { data, error } = await sb.auth.signUp({
+        if(password !== confirmPassword) {
+            form.setError("password", {
+                message: "Passwords are not the same."
+            })
+            form.setError("confirmPassword", {
+                message: "Passwords are not the same."
+            })
+            return;
+        }
+
+        const { error } = await sb.auth.signUp({
             email,
             password,
         })
 
         if(error) {
+            const err_msg = errorMessageHandle(error.code)
+
             form.setError("email", {
                 message: "",
                 type: "validate",
@@ -49,10 +66,15 @@ export const RegisterForm = () => {
                 type: "validate",
             })
             form.setError("root", {
-                message: error.message,
+                message: err_msg,
                 type: "validate",
             })
+
+            return;
         }
+
+        form.reset();
+        toast.success("Account created! Please check your email to verify your account and proceed to log in!")
     }
 
     return (
@@ -62,7 +84,7 @@ export const RegisterForm = () => {
                 control={form.control}
                 render={({ field, fieldState}) => (
                     <Field orientation={"responsive"} data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="email" aria-invalid={fieldState.invalid}>Email</FieldLabel>
+                        <FieldLabel htmlFor={field.name} aria-invalid={fieldState.invalid}>Email</FieldLabel>
                         <Input type="email" placeholder="you@example.com" {...field} aria-invalid={fieldState.invalid} />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -75,7 +97,7 @@ export const RegisterForm = () => {
                 control={form.control}
                 render={({ field, fieldState}) => (
                     <Field orientation={"responsive"} data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="password" aria-invalid={fieldState.invalid}>Password</FieldLabel>
+                        <FieldLabel htmlFor={field.name} aria-invalid={fieldState.invalid}>Password</FieldLabel>
                         <Input type="password" {...field} aria-invalid={fieldState.invalid} />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -83,8 +105,43 @@ export const RegisterForm = () => {
                     </Field>
                 )}
             />
-            <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
-                {form.formState.errors.root && !form.formState.isValid ? "There is an error" : form.formState.isSubmitting ? "Logging in..." : "Log in"}
+            <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState}) => (
+                    <Field orientation={"responsive"} data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name} aria-invalid={fieldState.invalid}>Confirm Password</FieldLabel>
+                        <Input type="password" {...field} aria-invalid={fieldState.invalid} />
+                        {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                        )}
+                    </Field>
+                )}
+            />
+            <Controller
+                name="accept"
+                control={form.control}
+                render={({ field, fieldState}) => (
+                    <Field data-invalid={fieldState.invalid}>
+                        <div className="flex flex-row space-x-2 px-4 py-2 items-center bg-accent rounded-md text-accent-foreground">
+                            <Checkbox
+                                id="accept"
+                                name={field.name}
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
+                            <FieldLabel htmlFor="accept" aria-invalid={fieldState.invalid}>
+                                <p className="text-sm [&>a]:underline [&>a]:underline-offset-2">I accept the <a href="#risks" target="_blank">risks</a> and accept all <a href="#legal" target="_blank">legal requirement (ToS & Privacy Policy)</a></p>
+                            </FieldLabel>
+                        </div>
+                        {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                        )}
+                    </Field>
+                )}
+            />
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? "Creating account..." : "Create account"}
             </Button>
             {form.formState.errors.root ? (
                 <FieldError errors={[form.formState.errors.root]} />
