@@ -5,12 +5,13 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "",
-    "dev:extension": "",
-    "dev:web": "",
-    "build": "",
-    "build:extension": "",
-    "build:web": ""
+    "dev": "bun run --filter './apps/*' dev",
+    "dev:extension": "bun run --filter extension dev",
+    "dev:web": "bun run --filter web dev",
+    
+    "build": "bun run --filter './apps/*' build",
+    "build:extension": "bun run --filter extension build",
+    "build:web": "bun run --filter web build"
   },
   "devDependencies": {
     "@types/bun": "latest"
