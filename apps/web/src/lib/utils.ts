@@ -24,3 +24,5 @@ export function errorMessageHandle(supabaseErrorCode: AuthError["code"]): string
       return "Auth provider cannot process the request, reason can vary, contact support."
   }
 }
+
+export const VALID_CANARIO_TEXT = "CANARIO_SERINUS_CANARIA"

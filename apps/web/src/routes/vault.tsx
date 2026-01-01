@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { isAuthenticated, sb } from "../lib/supabase"
 import { Button } from "@/components/ui/button";
 import { errorMessageHandle } from "@/lib/utils";
+import { VaultGate } from "@/components/vault/vault-gate.comp";
 
 function VaultPage() {
     const [allowed, setAllowed] = useState<boolean | null>(null);
+    const [locked, setLocked] = useState<boolean>(true);
 
-    const params = new URLSearchParams(location.search);
+    const filter = useMemo(() => {
+        const params = new URLSearchParams(location.search);
+        return params.get("filter") || "all";
+    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -45,6 +50,12 @@ function VaultPage() {
         location.href = "/";
     }
 
+    // function filterChange(newFilter: string) {
+    //     const params = new URLSearchParams(location.search);
+    //     params.set("filter", newFilter);
+    //     location.search = params.toString();
+    // }
+
     return (
         <div className="h-screen max-w-dvw flex flex-col w-dvw">
             <header className="p-4 border-b flex justify-between items-center">
@@ -72,18 +83,19 @@ function VaultPage() {
                 </div>
             </header>
             <main className="container mx-auto">
-                <h2>Welcome to your vault!</h2>
+                <VaultGate>
+                    <h2>Vault content - Filter: {filter}</h2>
+                </VaultGate>
             </main>
-            <footer>
+            {/* <footer>
                 <p>© {new Date().getFullYear()} Sera Password Manager</p>
-            </footer>
-            {/* Floating toolbar with filters */}
+            </footer> */}
+            {/* Floating toolbar */}
             {/* This div is just a container for the toolbar, hover on it will reveal the toolbar, is to avoid hover bugs */}
             <div className="fixed -bottom-6 hover:bottom-2 transition-all transition-discrete duration-200 left-1/2 transform -translate-x-1/2 w-fit bg-transparent backdrop-blur-xl border border-white/75 shadow-md inset-shadow-accent-foreground p-4 flex justify-center rounded-md">
-                <Button variant={"ghost"} size={"sm"}>All</Button>
-                <Button variant={"ghost"} size={"sm"}>Favorites</Button>
-                <Button variant={"ghost"} size={"sm"}>Shared</Button>
-                <Button variant={"ghost"} size={"sm"}>Archived</Button>
+                <Button variant={"ghost"} size={"sm"}>Filters</Button>
+                <Button variant={"ghost"} size={"sm"}>Unlock vault</Button>
+                <Button variant={"ghost"} size={"sm"}>New element</Button>
             </div>
         </div>
     )

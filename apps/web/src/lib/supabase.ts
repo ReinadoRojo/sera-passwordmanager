@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type User } from "@supabase/supabase-js";
 
 // TODO: add this to env and fetch from there
 const SUPABASE_URL = "https://xjcmjpkccjushtszrjbj.supabase.co"
@@ -10,11 +10,16 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
     },
 })
 
-export async function isAuthenticated() {
+export async function isAuthenticated(): Promise<[boolean, User | null]> {
     const { data, error } = await sb.auth.getSession()
     if(error || !data || !data.session?.user) return [false, null]
 
     return [true, data.session.user]
+}
+
+export async function hasSecurityProfile() {
+    const { data: sp } = await sb.from("security_profile").select("*").single();
+    return !!sp;
 }
 
 export { sb, sb as supabase}
