@@ -7,7 +7,7 @@ import {z} from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { errorMessageHandle } from "@/lib/utils"
-import { Checkbox } from "./ui/checkbox"
+import { Checkbox } from "../ui/checkbox"
 import { toast } from "sonner"
 
 export const RegisterForm = () => {
@@ -74,7 +74,11 @@ export const RegisterForm = () => {
         }
 
         form.reset();
-        toast.success("Account created! Please check your email to verify your account and proceed to log in!")
+        toast.success("Account created! Please check your email to verify your account and proceed to log in!", {
+            duration: 8000,
+            description: "If you don't see the email, please check your spam folder.",
+            richColors: true
+        })
     }
 
     return (

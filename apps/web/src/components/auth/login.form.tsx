@@ -7,8 +7,9 @@ import {z} from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { errorMessageHandle } from "@/lib/utils"
+import { toast } from "sonner"
 
-export const LoginForm = () => {
+export const LoginForm = ({ redirectTo }: { redirectTo?: string }) => {
     const schema = z.object({
         email: z.email({ error: "Invalid email address" }),
         password: z.string().min(1),
@@ -24,7 +25,7 @@ export const LoginForm = () => {
     async function onSubmit(formData: z.infer<typeof schema>) {
         const { email, password } = formData;
 
-        const { data, error } = await sb.auth.signInWithPassword({
+        const { error } = await sb.auth.signInWithPassword({
             email,
             password
         })
@@ -47,6 +48,23 @@ export const LoginForm = () => {
 
             return;
         }
+
+        // TODO: Handle weak password email notification.
+
+        // Successful login
+        form.reset()
+
+        toast.success("Welcome back!", {
+            duration: 4000,
+            dismissible: true,
+            richColors: true,
+        })
+
+        if(redirectTo) {
+            window.location.href = redirectTo;
+        }
+
+        return;
     }
 
     return (
