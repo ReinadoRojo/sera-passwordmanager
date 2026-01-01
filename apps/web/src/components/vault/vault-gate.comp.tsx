@@ -100,7 +100,7 @@ export const VaultGate = ({ children }: { children: React.ReactNode }) => {
             {/* Body */}
             {vaultState === "setup_needed" && (
                 <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button size={"lg"}>
                             Create a master password
                         </Button>
@@ -139,7 +139,7 @@ export const VaultGate = ({ children }: { children: React.ReactNode }) => {
             )}
             {vaultState === "locked" && (
                 <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button size={"lg"}>
                             Unlock vault
                         </Button>
