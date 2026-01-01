@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import { isAuthenticated } from "../lib/supabase"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { LoginForm } from "@/components/login.form"
+import { LoginForm } from "@/components/auth/login.form"
+import { AuthHeader } from "@/components/auth/common"
 
 const VAULT_URL = `/vault`
 const SIGN_UP_URL = "/signup"
@@ -21,18 +22,14 @@ function AuthPage() {
         <main className="h-screen w-screen flex items-center justify-center">
             <Card className="w-100 mx-auto">
                 <CardHeader>
-                    <div className="flex flex-row space-x-4 items-center justify-center">
-                        <img src="/logo-white.svg" alt="Sera password manager" className="size-14"/>
-                        <h1 className="text-2xl font-bold text-[#283841]">Sera</h1>
-                    </div>
-                    <p className="mx-auto text-sm text-[#283841]">Open-source password manager</p>
+                    <AuthHeader />
                 </CardHeader>
                 <CardContent>
-                    <LoginForm />
+                    <LoginForm redirectTo={VAULT_URL} />
                 </CardContent>
                 <CardFooter>
                     <div className="flex flex-col space-y-4">
-                        <p className="text-center text-sm text-[#283841]">
+                        <p className="text-center text-sm text-[#d3d3d3]">
                             Don't have an account? <a href={SIGN_UP_URL} className="text-blue-500 underline">Sign up</a>
                         </p>
                     </div>
