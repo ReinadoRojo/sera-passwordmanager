@@ -18,7 +18,7 @@ export async function isAuthenticated(): Promise<[boolean, User | null]> {
 }
 
 export async function hasSecurityProfile() {
-    const { data: sp } = await sb.from("security_profile").select("*").single();
+    const { data: sp } = await sb.from("security_profile").select("*").maybeSingle();
     return !!sp;
 }
 

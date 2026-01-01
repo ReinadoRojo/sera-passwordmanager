@@ -3,7 +3,7 @@ import { isAuthenticated, sb } from "./supabase";
 import { VALID_CANARIO_TEXT } from "./utils";
 
 export async function isValidMasterPassword(masterPasswordInput: string): Promise<[boolean, string]> {
-    const { data: sp } = await sb.from("security_profile").select("*").single();
+    const { data: sp } = await sb.from("security_profile").select("*").maybeSingle();
     if(!sp) return [false, "Security profile not found"];
 
     try {
