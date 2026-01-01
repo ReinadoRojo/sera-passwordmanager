@@ -58,6 +58,7 @@ export const VaultGate = ({ children }: { children: React.ReactNode }) => {
         setMasterPasswordInput("");     // Reset input
         setError(null);                 // Reset error
         setPending(false);              // Reset pending
+        setVaultState("unlocked");
     }
 
     const handleUnlock = async () => {
