@@ -1,0 +1,1 @@
+trabajando en ello, si dios quiere, se va a entender mejor que la de ingles
