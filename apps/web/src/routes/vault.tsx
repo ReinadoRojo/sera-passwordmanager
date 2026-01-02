@@ -6,6 +6,7 @@ import { VaultGate } from "@/components/vault/vault-gate.comp";
 import { useVaultStore } from "@/stores/vault.store";
 import { VaultList } from "@/components/vault/vault.list";
 import { PlusIcon } from "lucide-react";
+import { VaultNewDialog } from "@/components/vault/vault.new";
 
 function VaultPage() {
     const [allowed, setAllowed] = useState<boolean | null>(null);
@@ -88,9 +89,11 @@ function VaultPage() {
             <main className="container mx-auto space-y-4 pt-8">
                 <VaultGate>
                     <div className="flex flex-row">
-                        <Button variant={"outline"} size={"sm"} className="ml-auto">
-                            <PlusIcon className="size-4"/> Add a new entry
-                        </Button>
+                        <VaultNewDialog>
+                            <Button variant={"outline"} size={"sm"} className="ml-auto">
+                                <PlusIcon className="size-4"/> Add a new entry
+                            </Button>
+                        </VaultNewDialog>
                     </div>
                     <VaultList />
                 </VaultGate>
@@ -105,7 +108,9 @@ function VaultPage() {
                 !vaultUnlocked && "opacity-50 pointer-events-none"
             )}>
                 <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>Filters</Button>
-                <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>New login</Button>
+                <VaultNewDialog>
+                    <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>New login</Button>
+                </VaultNewDialog>
                 <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>Generate password</Button>
             </div>
         </div>

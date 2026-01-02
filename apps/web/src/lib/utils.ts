@@ -25,4 +25,27 @@ export function errorMessageHandle(supabaseErrorCode: AuthError["code"]): string
   }
 }
 
+/**
+ * Code from https://github.com/atypicvoyage-droid/dynamic-password-generator/blob/main/generator_js.js
+ */
+const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?0O1lI'
+
+export function generateSafePassword(lenght: number, validOffset: number | 0) { // FIXME: FUCKING RANDOMNESS
+  let password = "";
+  let finalLenght = lenght;
+  if(validOffset !== 0) {
+    finalLenght += Math.floor(Math.random() * validOffset);
+  }
+
+  const array = new Uint32Array(length);
+  crypto.getRandomValues(array)
+
+  for(let i = 0; i < finalLenght; i++) {
+    const idx = array[i] % CHARSET.length;
+    password += CHARSET[idx]
+  }
+
+  return password
+}
+
 export const VALID_CANARIO_TEXT = "CANARIO_SERINUS_CANARIA"
