@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { isAuthenticated, sb } from "../lib/supabase"
 import { Button } from "@/components/ui/button";
-import { errorMessageHandle } from "@/lib/utils";
+import { cn, errorMessageHandle } from "@/lib/utils";
 import { VaultGate } from "@/components/vault/vault-gate.comp";
+import { useVaultStore } from "@/stores/vault.store";
+import { VaultList } from "@/components/vault/vault.list";
+import { PlusIcon } from "lucide-react";
 
 function VaultPage() {
     const [allowed, setAllowed] = useState<boolean | null>(null);
-    const [locked, setLocked] = useState<boolean>(true);
+    const vaultUnlocked = useVaultStore(s => s.isUnlocked());
 
     const filter = useMemo(() => {
         const params = new URLSearchParams(location.search);
@@ -82,9 +85,14 @@ function VaultPage() {
                     </Button>
                 </div>
             </header>
-            <main className="container mx-auto">
+            <main className="container mx-auto space-y-4 pt-8">
                 <VaultGate>
-                    <h2>Vault content - Filter: {filter}</h2>
+                    <div className="flex flex-row">
+                        <Button variant={"outline"} size={"sm"} className="ml-auto">
+                            <PlusIcon className="size-4"/> Add a new entry
+                        </Button>
+                    </div>
+                    <VaultList />
                 </VaultGate>
             </main>
             {/* <footer>
@@ -92,10 +100,13 @@ function VaultPage() {
             </footer> */}
             {/* Floating toolbar */}
             {/* This div is just a container for the toolbar, hover on it will reveal the toolbar, is to avoid hover bugs */}
-            <div className="fixed -bottom-6 hover:bottom-2 transition-all transition-discrete duration-200 left-1/2 transform -translate-x-1/2 w-fit bg-transparent backdrop-blur-xl border border-white/75 shadow-md inset-shadow-accent-foreground p-4 flex justify-center rounded-md">
-                <Button variant={"ghost"} size={"sm"}>Filters</Button>
-                <Button variant={"ghost"} size={"sm"}>Unlock vault</Button>
-                <Button variant={"ghost"} size={"sm"}>New element</Button>
+            <div className={cn(
+                "fixed -bottom-6 hover:bottom-2 transition-all transition-discrete duration-200 left-1/2 transform -translate-x-1/2 w-fit bg-transparent backdrop-blur-xl border border-white/75 shadow-md inset-shadow-accent-foreground p-4 flex justify-center rounded-md",
+                !vaultUnlocked && "opacity-50 pointer-events-none"
+            )}>
+                <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>Filters</Button>
+                <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>New login</Button>
+                <Button variant={"ghost"} size={"sm"} disabled={!vaultUnlocked}>Generate password</Button>
             </div>
         </div>
     )

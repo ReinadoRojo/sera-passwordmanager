@@ -10,7 +10,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
     },
 })
 
-export async function isAuthenticated(): Promise<[boolean, User | null]> {
+export async function isAuthenticated(): Promise<[false, null] | [true, User]> {
     const { data, error } = await sb.auth.getSession()
     if(error || !data || !data.session?.user) return [false, null]
 

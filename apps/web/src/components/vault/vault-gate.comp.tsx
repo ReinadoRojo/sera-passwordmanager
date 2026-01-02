@@ -80,6 +80,10 @@ export const VaultGate = ({ children }: { children: React.ReactNode }) => {
 
     if(isUnlocked && vaultState === "unlocked") return <>{children}</>;
 
+    if(!isUnlocked && vaultState === "unlocked") {
+        setVaultState("locked");
+    }
+
     return (
         <div className="flex flex-col items-center justify-center h-[50vh] space-y-6">
             {/* Icon */}
